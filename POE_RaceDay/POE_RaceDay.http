@@ -1,0 +1,6 @@
+@POE_RaceDay_HostAddress = http://localhost:5034
+
+GET {{POE_RaceDay_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
