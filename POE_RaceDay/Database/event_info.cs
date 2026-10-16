@@ -4,16 +4,17 @@ namespace POE_RaceDay.Database
 {//start of namespace
     public class event_info
     {//start of event_info class
+
+        //cnnectionstring
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
         public string get_events()
-        {
+        {//start of get_events
             string message = "";
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -28,11 +29,9 @@ namespace POE_RaceDay.Database
                             EventDescription
                         FROM Event";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
@@ -56,19 +55,18 @@ namespace POE_RaceDay.Database
             }
 
             return message;
-        }
+        }//end of get_events
 
 
-        
+
         //get event
         public string get_event(int eventID)
-        {
+        {//start of get_event
             string message = "Event not found.";
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -84,14 +82,11 @@ namespace POE_RaceDay.Database
                         FROM Event
                         WHERE EventID = @EventID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    command.Parameters.AddWithValue( "@EventID", eventID);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     if (reader.Read())
                     {
@@ -114,24 +109,17 @@ namespace POE_RaceDay.Database
             }
 
             return message;
-        }
+        }//start of get_event
 
 
         //create an event
-        public string create_event(
-            int organiserID,
-            string eventType,
-            string eventName,
-            DateTime eventDate,
-            string eventLocation,
-            string eventDescription)
+        public string create_event( int organiserID,string eventType, string eventName, DateTime eventDate, string eventLocation, string eventDescription)
         {
             string message = "Event failed to create.";
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -155,29 +143,21 @@ namespace POE_RaceDay.Database
                             @EventDescription
                         )";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@OrganiserID", organiserID);
+                    command.Parameters.AddWithValue( "@OrganiserID", organiserID);
 
-                    command.Parameters.AddWithValue(
-                        "@EventType", eventType);
+                    command.Parameters.AddWithValue( "@EventType", eventType);
 
-                    command.Parameters.AddWithValue(
-                        "@EventName", eventName);
+                    command.Parameters.AddWithValue( "@EventName", eventName);
 
-                    command.Parameters.AddWithValue(
-                        "@EventDate", eventDate);
+                    command.Parameters.AddWithValue( "@EventDate", eventDate);
 
-                    command.Parameters.AddWithValue(
-                        "@EventLocation", eventLocation);
+                    command.Parameters.AddWithValue( "@EventLocation", eventLocation);
 
-                    command.Parameters.AddWithValue(
-                        "@EventDescription", eventDescription);
+                    command.Parameters.AddWithValue("@EventDescription", eventDescription);
 
-                    int rows =
-                        command.ExecuteNonQuery();
+                    int rows =command.ExecuteNonQuery();
 
                     if (rows > 0)
                     {
@@ -195,21 +175,13 @@ namespace POE_RaceDay.Database
 
 
         //update an event
-        public string update_event(
-            int eventID,
-            int organiserID,
-            string eventType,
-            string eventName,
-            DateTime eventDate,
-            string eventLocation,
-            string eventDescription)
-        {
+        public string update_event( int eventID, int organiserID, string eventType, string eventName, DateTime eventDate, string eventLocation, string eventDescription)
+        {//start of update_event
             string message = "Event failed to update.";
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -225,32 +197,23 @@ namespace POE_RaceDay.Database
                             EventID = @EventID
                             AND OrganiserID = @OrganiserID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    command.Parameters.AddWithValue( "@EventID", eventID);
 
-                    command.Parameters.AddWithValue(
-                        "@OrganiserID", organiserID);
+                    command.Parameters.AddWithValue( "@OrganiserID", organiserID);
 
-                    command.Parameters.AddWithValue(
-                        "@EventType", eventType);
+                    command.Parameters.AddWithValue( "@EventType", eventType);
 
-                    command.Parameters.AddWithValue(
-                        "@EventName", eventName);
+                    command.Parameters.AddWithValue( "@EventName", eventName);
 
-                    command.Parameters.AddWithValue(
-                        "@EventDate", eventDate);
+                    command.Parameters.AddWithValue( "@EventDate", eventDate);
 
-                    command.Parameters.AddWithValue(
-                        "@EventLocation", eventLocation);
+                    command.Parameters.AddWithValue( "@EventLocation", eventLocation);
 
-                    command.Parameters.AddWithValue(
-                        "@EventDescription", eventDescription);
+                    command.Parameters.AddWithValue( "@EventDescription", eventDescription);
 
-                    int rows =
-                        command.ExecuteNonQuery();
+                    int rows = command.ExecuteNonQuery();
 
                     if (rows > 0)
                     {
@@ -258,8 +221,7 @@ namespace POE_RaceDay.Database
                     }
                     else
                     {
-                        message =
-                            "Event not found or you do not own this event.";
+                        message = "Event not found or you do not own this event.";
                     }
                 }
             }
@@ -269,21 +231,18 @@ namespace POE_RaceDay.Database
             }
 
             return message;
-        }
+        }//end of update_event
 
 
       
         //delete an event
-        public string delete_event(
-            int eventID,
-            int organiserID)
-        {
+        public string delete_event( int eventID, int organiserID)
+        {//start of delete_event
             string message = "Event failed to delete.";
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -293,17 +252,13 @@ namespace POE_RaceDay.Database
                             EventID = @EventID
                             AND OrganiserID = @OrganiserID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    command.Parameters.AddWithValue("@EventID", eventID);
 
-                    command.Parameters.AddWithValue(
-                        "@OrganiserID", organiserID);
+                    command.Parameters.AddWithValue("@OrganiserID", organiserID);
 
-                    int rows =
-                        command.ExecuteNonQuery();
+                    int rows =command.ExecuteNonQuery();
 
                     if (rows > 0)
                     {
@@ -322,6 +277,6 @@ namespace POE_RaceDay.Database
             }
 
             return message;
-        }
+        }//end of delete_event
     }//end of event_info class
 }//end of namespace

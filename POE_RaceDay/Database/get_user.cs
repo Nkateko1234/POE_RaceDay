@@ -1,18 +1,17 @@
 ﻿using System.Data.SqlClient;
 namespace POE_RaceDay.Database
-{
+{//start of namespace
     public class get_user
-    {
+    {//start of get_user class
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
         public string get_info(int userID)
-        {
+        {//tstart of get_info method
             string message = "User not found.";
 
             try
-            {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+            {//start of try
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -25,41 +24,28 @@ namespace POE_RaceDay.Database
                         FROM Users
                         WHERE UserID = @UserID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@UserID", userID);
+                    command.Parameters.AddWithValue( "@UserID", userID);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        message =
-                            "User ID: " +
-                            reader["UserID"] +
-                            " | First Name: " +
-                            reader["FirstName"] +
-                            " | Last Name: " +
-                            reader["LastName"] +
-                            " | Email: " +
-                            reader["Email"] +
-                            " | Role: " +
-                            reader["Role"];
+                        //displays user's info
+                        message = "User ID: " + reader["UserID"] + " | First Name: " + reader["FirstName"] + " | Last Name: " + reader["LastName"] +  " | Email: " + reader["Email"] + " | Role: " + reader["Role"];
                     }
 
                     reader.Close();
                 }
-            }
+            }//end of try
             catch (Exception ex)
-            {
-                message =
-                    "Failed to get user: " +
-                    ex.Message;
-            }
+            {//start of catch
+                //return message
+                message = "Failed to get user: " + ex.Message;
+            }//end of catch
 
             return message;
-        }
-    }
-}
+        }//end of method
+    }//end of get_user class
+}//end of namespace

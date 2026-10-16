@@ -1,23 +1,22 @@
 ﻿using System.Data.SqlClient;
 
 namespace POE_RaceDay.Database
-{
+{//start of namespace
     public class result_info
-    {
+    {//start of class
+
+        //connecton string
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
-        public string add_result(
-            int enrollmentID,
-            TimeSpan finishTime,
-            int position)
-        {
-            string message =
-                "Result failed to save.";
+        public string add_result( int enrollmentID, TimeSpan finishTime, int position)
+        {//start of add_result method
+
+            //message for when results fail to save 
+            string message = "Result failed to save.";
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -37,54 +36,38 @@ namespace POE_RaceDay.Database
                             'Completed'
                         )";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EnrollmentID",
-                        enrollmentID);
+                    command.Parameters.AddWithValue("@EnrollmentID", enrollmentID);
 
-                    command.Parameters.AddWithValue(
-                        "@FinishTime",
-                        finishTime);
+                    command.Parameters.AddWithValue("@FinishTime", finishTime);
 
-                    command.Parameters.AddWithValue(
-                        "@Position",
-                        position);
+                    command.Parameters.AddWithValue( "@Position", position);
 
-                    int rows =
-                        command.ExecuteNonQuery();
+                    int rows = command.ExecuteNonQuery();
 
                     if (rows > 0)
                     {
-                        message =
-                            "Result saved successfully.";
+                        message = "Result saved successfully.";
                     }
                 }
             }
             catch (Exception ex)
             {
-                message =
-                    "Result failed: " + ex.Message;
+                message = "Result failed: " + ex.Message;
             }
 
             return message;
-        }
+        }//end of add_result method
 
-
-        // =====================================================
         // PARTICIPANT VIEW OWN RESULTS
-        // =====================================================
-
-        public string get_my_results(
-            int participantID)
-        {
+        public string get_my_results(int participantID)
+        {//start of get_my_result method
             string message = "";
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -114,15 +97,11 @@ namespace POE_RaceDay.Database
                         WHERE Enrollment.ParticipantID =
                               @ParticipantID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@ParticipantID",
-                        participantID);
+                    command.Parameters.AddWithValue( "@ParticipantID", participantID);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
@@ -149,12 +128,10 @@ namespace POE_RaceDay.Database
             }
             catch (Exception ex)
             {
-                message =
-                    "Failed to get results: " +
-                    ex.Message;
+                message = "Failed to get results: " + ex.Message;
             }
 
             return message;
-        }
-    }
-}
+        }//end of get_my_result method
+    }//end of class
+}//end of namespace

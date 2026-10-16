@@ -2,18 +2,15 @@
 using System.Security.Cryptography;
 using System.Text;
 namespace POE_RaceDay.Database
-{
+{//start of namespace
     public class store_user
-    {
+    {//start of store_user
+
+        //connection string
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
-        public string register_user(
-            string firstName,
-            string lastName,
-            string email,
-            string password,
-            string role)
-        {
+        public string register_user( string firstName, string lastName, string email, string password, string role)
+        {//start of register_uer method
             string message = "Registration failed.";
 
             try
@@ -58,8 +55,7 @@ namespace POE_RaceDay.Database
                             VALUES
                             (@UserID, @Name, @Surname, @Email)";
 
-                        SqlCommand organiserCommand =
-                            new SqlCommand(organiserQuery, connection);
+                        SqlCommand organiserCommand = new SqlCommand(organiserQuery, connection);
 
                         organiserCommand.Parameters.AddWithValue("@UserID", userID);
                         organiserCommand.Parameters.AddWithValue("@Name", firstName);
@@ -76,8 +72,7 @@ namespace POE_RaceDay.Database
                             VALUES
                             (@UserID, @Name, @Surname, @Email)";
 
-                        SqlCommand participantCommand =
-                            new SqlCommand(participantQuery, connection);
+                        SqlCommand participantCommand = new SqlCommand(participantQuery, connection);
 
                         participantCommand.Parameters.AddWithValue("@UserID", userID);
                         participantCommand.Parameters.AddWithValue("@Name", firstName);
@@ -96,6 +91,6 @@ namespace POE_RaceDay.Database
             }
 
             return message;
-        }
-    }
-}
+        }//end of register_uer method
+    }//end of store_user
+}//end of namespace

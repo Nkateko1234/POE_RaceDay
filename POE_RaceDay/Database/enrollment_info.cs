@@ -1,23 +1,20 @@
 ﻿using System.Data.SqlClient;
 
 namespace POE_RaceDay.Database
-{
+{//start of namespace
     public class enrollment_info
-    {
+    {//start of class
+
+        //connection string
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
-        public string enroll(
-           int participantID,
-           int eventID,
-           int categoryID)
-        {
-            string message =
-                "Enrollment failed.";
+        public string enroll(int participantID, int eventID, int categoryID)
+        {//start of enrollment method
+            string message = "Enrollment failed.";
 
             try
-            {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+            {//start of try
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -28,25 +25,17 @@ namespace POE_RaceDay.Database
                         WHERE CategoryID = @CategoryID
                         AND EventID = @EventID";
 
-                    SqlCommand checkCommand =
-                        new SqlCommand(
-                            checkCategory,
-                            connection);
+                    SqlCommand checkCommand =  new SqlCommand(checkCategory, connection);
 
-                    checkCommand.Parameters.AddWithValue(
-                        "@CategoryID", categoryID);
+                    checkCommand.Parameters.AddWithValue( "@CategoryID", categoryID);
 
-                    checkCommand.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    checkCommand.Parameters.AddWithValue( "@EventID", eventID);
 
-                    int categoryExists =
-                        Convert.ToInt32(
-                            checkCommand.ExecuteScalar());
+                    int categoryExists = Convert.ToInt32(checkCommand.ExecuteScalar());
 
                     if (categoryExists == 0)
                     {
-                        return
-                            "The selected category does not belong to this event.";
+                        return "The selected category does not belong to this event.";
                     }
 
 
@@ -57,27 +46,17 @@ namespace POE_RaceDay.Database
                         WHERE ParticipantID = @ParticipantID
                         AND EventID = @EventID";
 
-                    SqlCommand enrollmentCheck =
-                        new SqlCommand(
-                            checkEnrollment,
-                            connection);
+                    SqlCommand enrollmentCheck = new SqlCommand( checkEnrollment, connection);
 
-                    enrollmentCheck.Parameters.AddWithValue(
-                        "@ParticipantID",
-                        participantID);
+                    enrollmentCheck.Parameters.AddWithValue( "@ParticipantID", participantID);
 
-                    enrollmentCheck.Parameters.AddWithValue(
-                        "@EventID",
-                        eventID);
+                    enrollmentCheck.Parameters.AddWithValue( "@EventID", eventID);
 
-                    int alreadyEnrolled =
-                        Convert.ToInt32(
-                            enrollmentCheck.ExecuteScalar());
+                    int alreadyEnrolled = Convert.ToInt32( enrollmentCheck.ExecuteScalar());
 
                     if (alreadyEnrolled > 0)
                     {
-                        return
-                            "Participant is already enrolled in this event.";
+                        return "Participant is already enrolled in this event.";
                     }
 
 
@@ -100,52 +79,40 @@ namespace POE_RaceDay.Database
                             'Enrolled'
                         )";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command =  new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    command.Parameters.AddWithValue( "@EventID", eventID);
 
-                    command.Parameters.AddWithValue(
-                        "@CategoryID", categoryID);
+                    command.Parameters.AddWithValue( "@CategoryID", categoryID);
 
-                    command.Parameters.AddWithValue(
-                        "@ParticipantID", participantID);
+                    command.Parameters.AddWithValue(  "@ParticipantID", participantID);
 
-                    int rows =
-                        command.ExecuteNonQuery();
+                    int rows = command.ExecuteNonQuery();
 
                     if (rows > 0)
                     {
-                        message =
-                            "Enrollment successful.";
+                        message ="Enrollment successful.";
                     }
                 }
-            }
+            }//end of try
             catch (Exception ex)
-            {
+            {//start of catch
                 message =
                     "Enrollment failed: " +
                     ex.Message;
-            }
+            }//end of catch
 
             return message;
-        }
+        }//end of enrollment method
 
-
-        // =====================================================
-        // GET MY ENROLLMENTS
-        // =====================================================
-
-        public string get_my_enrollments(
-            int participantID)
-        {
+        //method to get enrollements
+        public string get_my_enrollments( int participantID)
+        {//start pf get_my_enrollments
             string message = "";
 
             try
-            {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+            {//start of try
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -172,26 +139,15 @@ namespace POE_RaceDay.Database
                         WHERE Enrollment.ParticipantID =
                               @ParticipantID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@ParticipantID",
-                        participantID);
+                    command.Parameters.AddWithValue( "@ParticipantID", participantID);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
-                    {
-                        message +=
-                            "Enrollment ID: " +
-                            reader["EnrollmentID"] +
-                            " | Event: " +
-                            reader["EventName"] +
-                            " | Date: " +
-                            reader["EventDate"] +
-                            " | Location: " +
+                    {//start of while
+                        message +=  "Enrollment ID: " + reader["EnrollmentID"] + " | Event: " + reader["EventName"] + " | Date: " + reader["EventDate"] + " | Location: " +
                             reader["EventLocation"] +
                             " | Category: " +
                             reader["CategoryName"] +
@@ -202,26 +158,21 @@ namespace POE_RaceDay.Database
                             " | Status: " +
                             reader["EnrollmentStatus"] +
                             Environment.NewLine;
-                    }
+                    }//en f while
 
                     reader.Close();
                 }
-            }
+            }//end of try
             catch (Exception ex)
-            {
-                message =
-                    "Failed to get enrollments: " +
-                    ex.Message;
-            }
+            {//start of catch
+                message = "Failed to get enrollments: " + ex.Message;
+            }//end of catch
 
             return message;
-        }
+        }//end of get_my enrollments
 
 
-        // =====================================================
-        // ORGANISER VIEW EVENT ENROLLMENTS
-        // =====================================================
-
+        //method to get event enrollments
         public string get_event_enrollments(
             int eventID,
             int organiserID)
@@ -230,8 +181,7 @@ namespace POE_RaceDay.Database
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -263,17 +213,13 @@ namespace POE_RaceDay.Database
                         WHERE Enrollment.EventID = @EventID
                         AND Event.OrganiserID = @OrganiserID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    command.Parameters.AddWithValue( "@EventID", eventID);
 
-                    command.Parameters.AddWithValue(
-                        "@OrganiserID", organiserID);
+                    command.Parameters.AddWithValue( "@OrganiserID", organiserID);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
@@ -304,12 +250,10 @@ namespace POE_RaceDay.Database
             }
             catch (Exception ex)
             {
-                message =
-                    "Failed to get event enrollments: " +
-                    ex.Message;
+                message = "Failed to get event enrollments: " + ex.Message;
             }
 
             return message;
         }
-    }
-}
+    }//end of class
+}//end of namespace

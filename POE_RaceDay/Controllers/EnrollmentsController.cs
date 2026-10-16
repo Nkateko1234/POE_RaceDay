@@ -4,11 +4,13 @@ using POE_RaceDay.Database;
 using System.Data.SqlClient;
 
 namespace POE_RaceDay.Controllers
-{
+{//start of namespace
     [Route("api/[controller]")]
     [ApiController]
     public class EnrollmentsController : ControllerBase
-    {
+    {//start of class
+
+        //connection string
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
         [HttpPost]
@@ -50,11 +52,7 @@ namespace POE_RaceDay.Controllers
                 categoryID);
         }
 
-
-        // =====================================================
-        // PARTICIPANT VIEW OWN ENROLLMENTS
-        // =====================================================
-
+        //HttpGet to view own enrollments
         [HttpGet("my-enrollments")]
         public string MyEnrollments()
         {
@@ -91,10 +89,8 @@ namespace POE_RaceDay.Controllers
         }
 
 
-        // =====================================================
-        // ORGANISER VIEW EVENT ENROLLMENTS
-        // =====================================================
-
+        
+        //HTTPGet for EventEnrollment
         [HttpGet("event/{eventID}")]
         public string EventEnrollments(
             int eventID)
@@ -133,12 +129,9 @@ namespace POE_RaceDay.Controllers
         }
 
 
-        // =====================================================
-        // GET PARTICIPANT ID
-        // =====================================================
-
+        //Method to get participants
         private int GetParticipantID(int userID)
-        {
+        {//start of GetParticipantID method
             int participantID = 0;
 
             try
@@ -175,15 +168,11 @@ namespace POE_RaceDay.Controllers
             }
 
             return participantID;
-        }
+        }//end of GetParticipantID method
 
-
-        // =====================================================
-        // GET ORGANISER ID
-        // =====================================================
 
         private int GetOrganiserID(int userID)
-        {
+        {//start of GetOrganiserID method
             int organiserID = 0;
 
             try
@@ -220,6 +209,6 @@ namespace POE_RaceDay.Controllers
             }
 
             return organiserID;
-        }
-    }
-}
+        }//end of GetOrganiserID method
+    }//end of class
+}//end of namespace

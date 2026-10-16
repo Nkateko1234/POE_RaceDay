@@ -4,69 +4,49 @@ using POE_RaceDay.Database;
 using System.Data.SqlClient;
 
 namespace POE_RaceDay.Controllers
-{
+{//start of namspace
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
-    {
+    {//start of class
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
         [HttpGet]
         public string GetCategories()
-        {
-            category_info category =
-                new category_info();
+        {//start of GetCategories
+            category_info category = new category_info();
 
             return category.get_categories();
-        }
+        }//end of GetCategories
 
-
-        // =====================================================
-        // GET CATEGORIES FOR AN EVENT
-        // =====================================================
-
+        //Get Categories for event
         [HttpGet("event/{eventID}")]
         public string GetEventCategories(int eventID)
-        {
-            category_info category =
-                new category_info();
+        {//start of GetEventCategories
+            category_info category = new category_info();
 
-            return category.get_event_categories(
-                eventID);
+            return category.get_event_categories(eventID);
         }
 
-
-        // =====================================================
-        // CREATE CATEGORY
-        // ORGANISER ONLY
-        // =====================================================
-
+        //create category for organsers only
         [HttpPost]
-        public string CreateCategory(
-            int eventID,
-            string categoryName,
-            string distance,
-            decimal entryFee)
-        {
-            int? userID =
-                HttpContext.Session.GetInt32("UserID");
+        public string CreateCategory(int eventID,string categoryName, string distance, decimal entryFee)
+        {//start of CreateCategory
+            int? userID = HttpContext.Session.GetInt32("UserID");
 
             if (userID == null)
             {
                 return "You must be logged in.";
             }
 
-            string role =
-                HttpContext.Session.GetString("Role");
+            string role = HttpContext.Session.GetString("Role");
 
             if (role != "Organiser")
             {
-                return
-                    "Only Organisers can create categories.";
+                return "Only Organisers can create categories.";
             }
 
-            int organiserID =
-                GetOrganiserID(userID.Value);
+            int organiserID = GetOrganiserID(userID.Value);
 
             if (organiserID == 0)
             {
@@ -74,36 +54,24 @@ namespace POE_RaceDay.Controllers
             }
 
             // Check that the event belongs to this organiser
-            if (!EventBelongsToOrganiser(
-                    eventID, organiserID))
+            if (!EventBelongsToOrganiser( eventID, organiserID))
             {
-                return
-                    "You can only create categories for your own events.";
+                return "You can only create categories for your own events.";
             }
 
-            category_info category =
-                new category_info();
+            category_info category = new category_info();
 
-            return category.create_category(
-                eventID,
-                categoryName,
-                distance,
-                entryFee);
-        }
+            return category.create_category( eventID,categoryName, distance, entryFee);
+        }//end of CreateCategory
 
-
-        // =====================================================
         // GET ORGANISER ID
-        // =====================================================
-
         private int GetOrganiserID(int userID)
         {
             int organiserID = 0;
 
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -112,19 +80,15 @@ namespace POE_RaceDay.Controllers
                         FROM Organiser
                         WHERE UserID = @UserID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command =new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@UserID", userID);
+                    command.Parameters.AddWithValue( "@UserID", userID);
 
-                    object result =
-                        command.ExecuteScalar();
+                    object result = command.ExecuteScalar();
 
                     if (result != null)
                     {
-                        organiserID =
-                            Convert.ToInt32(result);
+                        organiserID = Convert.ToInt32(result);
                     }
                 }
             }
@@ -137,18 +101,12 @@ namespace POE_RaceDay.Controllers
         }
 
 
-        // =====================================================
         // CHECK EVENT OWNERSHIP
-        // =====================================================
-
-        private bool EventBelongsToOrganiser(
-            int eventID,
-            int organiserID)
+        private bool EventBelongsToOrganiser(int eventID, int organiserID)
         {
             try
             {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -158,18 +116,13 @@ namespace POE_RaceDay.Controllers
                         WHERE EventID = @EventID
                         AND OrganiserID = @OrganiserID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    command.Parameters.AddWithValue( "@EventID", eventID);
 
-                    command.Parameters.AddWithValue(
-                        "@OrganiserID", organiserID);
+                    command.Parameters.AddWithValue( "@OrganiserID", organiserID);
 
-                    int count =
-                        Convert.ToInt32(
-                            command.ExecuteScalar());
+                    int count = Convert.ToInt32(command.ExecuteScalar());
 
                     return count > 0;
                 }
@@ -181,4 +134,4 @@ namespace POE_RaceDay.Controllers
         }
 
     }
-}
+}//end of namespace
