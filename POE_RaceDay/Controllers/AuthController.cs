@@ -24,7 +24,7 @@ namespace POE_RaceDay.Controllers
         }//end of register
 
         [HttpPost("login")]
-        public string Login(string email, string password)
+        public IActionResult Login(string email, string password)
         {//start of login
             login_user user = new login_user();
 
@@ -33,13 +33,23 @@ namespace POE_RaceDay.Controllers
 
             string result = user.login(email,password,out userID,out role);
 
-            if (result == "Login successful.")
-            {//start of if
-                HttpContext.Session.SetInt32("UserID", userID);
-                HttpContext.Session.SetString("Role", role);
-            }//end of if
+            if (result != "Login successful.")
+            {
+                return Unauthorized(new
+                {
+                    message = result
+                });
+            }
 
-            return result;
+            HttpContext.Session.SetInt32("UserID", userID);
+            HttpContext.Session.SetString("Role", role);
+
+            return Ok(new
+            {
+                message = result,
+                userID = userID,
+                role = role
+            });
         }//end of login
 
         [HttpPost("logout")]
