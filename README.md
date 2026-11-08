@@ -93,3 +93,6 @@ The current LocalDB connection string is: @"Data source=(localdb)\api_guide;data
 3. Confirm that the database connection string is correct.
 4. Build the solution.
 5. Run the project.
+
+# Youtube Link
+Youtube: https://youtu.be/NsEi9I6HNKw
