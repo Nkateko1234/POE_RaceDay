@@ -20,3 +20,34 @@ html {
 body {
   margin-bottom: 60px;
 }
+body {
+    background-color: #F5F1E8;
+    color: #171717;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: #F5F1E8 !important;
+}
+
+.navbar-brand,
+.nav-link {
+    color: #171717 !important;
+    font-weight: 600;
+}
+
+    .nav-link:hover {
+        color: #80B900 !important;
+    }
+
+.btn-raceday {
+    background-color: #B7FF35;
+    color: #171717;
+    font-weight: bold;
+    border: none;
+}
+
+    .btn-raceday:hover {
+        background-color: #A4EA25;
+        color: #171717;
+    }

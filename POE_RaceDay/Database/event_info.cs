@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using POE_RaceDay.Models;
 
 namespace POE_RaceDay.Database
 {//start of namespace

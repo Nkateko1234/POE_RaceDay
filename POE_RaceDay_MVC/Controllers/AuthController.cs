@@ -125,13 +125,23 @@ namespace POE_RaceDay_MVC.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                ViewBag.Error = result;
+                try
+                {
+                    using JsonDocument document = JsonDocument.Parse(result);
+
+                    ViewBag.Error = document.RootElement .GetProperty("message").GetString();
+                }
+                catch
+                {
+                    ViewBag.Error = result;
+                }
+                
                 return View(model);
             }
 
             ViewBag.Success = "Registration successful. Please log in.";
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]

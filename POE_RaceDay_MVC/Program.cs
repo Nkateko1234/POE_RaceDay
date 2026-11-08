@@ -14,11 +14,12 @@ builder.Services.AddSession(options =>
 });
 
 // Configure connection to the RaceDay API
-builder.Services.AddHttpClient("RaceDayAPI").ConfigurePrimaryHttpMessageHandler(() =>new HttpClientHandler
+builder.Services.AddHttpClient("RaceDayAPI", client =>
 {
-    UseCookies = false
+    client.BaseAddress = new Uri(
+        builder.Configuration["ApiSettings:BaseUrl"]!
+    );
 });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +34,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

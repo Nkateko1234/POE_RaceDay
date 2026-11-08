@@ -16,11 +16,26 @@ namespace POE_RaceDay.Controllers
     public class AuthController : ControllerBase
     {//start of AuthController
         [HttpPost("register")]
-        public string Register( string firstName, string lastName, string email, string password, UserRole role)
+        public IActionResult Register( string firstName, string lastName, string email, string password, UserRole role)
         {//start of register
             store_user user = new store_user();
 
-            return user.register_user(firstName, lastName, email, password, role.ToString());
+            string result = user.register_user(firstName,lastName, email, password, role.ToString()
+        );
+
+            if(result.StartsWith("Registration successful."))
+    {
+                return Ok(new
+                {
+                    message = result
+                });
+            }
+
+            // Return an error if registration failed
+            return BadRequest(new
+            {
+                message = result
+            });
         }//end of register
 
         [HttpPost("login")]

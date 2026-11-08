@@ -2,7 +2,56 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid py-5 text-center"
+     style="background-color: #F5F1E8; color: #171717;">
+
+    <h1 class="display-1 fw-bold">RACEDAY<span style="color:#B7FF35;">.</span></h1>
+
+    <h2 class="fw-bold mb-4">
+        PUSH YOUR LIMITS.
+        <br />
+        OWN YOUR RACE.
+    </h2>
+
+    <p class="lead">
+        Discover exciting running events, challenge yourself
+        and become part of the RaceDay community.
+    </p>
+
+    <a asp-controller="Auth"
+       asp-action="Register"
+       class="btn btn-lg mt-3 me-2"
+       style="background-color:#B7FF35; color:#171717; font-weight:bold;">
+        REGISTER NOW
+    </a>
+
+    <a asp-controller="Auth"
+       asp-action="Login"
+       class="btn btn-outline-dark btn-lg mt-3">
+        LOGIN
+    </a>
+
+</div>
+
+<div class="container py-5">
+
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-4">
+            <h3 class="fw-bold">01. DISCOVER</h3>
+            <p>Find exciting upcoming running events.</p>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <h3 class="fw-bold">02. COMPETE</h3>
+            <p>Register and challenge yourself.</p>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <h3 class="fw-bold">03. ACHIEVE</h3>
+            <p>Track your race participation and results.</p>
+        </div>
+
+    </div>
+
 </div>
