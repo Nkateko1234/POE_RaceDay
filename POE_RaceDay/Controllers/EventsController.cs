@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using POE_RaceDay.Database;
+using POE_RaceDay.Models;
 using System.Data.SqlClient;
 
 namespace POE_RaceDay.Controllers
@@ -10,21 +12,28 @@ namespace POE_RaceDay.Controllers
     public class EventsController : ControllerBase
     {
         [HttpGet]
-        public string GetEvents()
+        public IActionResult GetEvents()
         {
             event_info events = new event_info();
 
-            return events.get_events();
+            return Ok(events.get_events());
         }
 
 
         // GET ONE EVENT
         [HttpGet("{eventID}")]
-        public string GetEvent(int eventID)
+        public IActionResult GetEvent(int eventID)
         {
             event_info events = new event_info();
 
-            return events.get_event(eventID);
+            EventModel? eventItem = events.get_event(eventID);
+
+            if (eventItem == null)
+            {
+                return NotFound("Event not found.");
+            }
+
+            return Ok(eventItem);
         }
 
         // CREATE EVENT

@@ -9,9 +9,9 @@ namespace POE_RaceDay.Database
         //cnnectionstring
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
-        public string get_events()
+        public List<EventModel> get_events()
         {//start of get_events
-            string message = "";
+            List<EventModel> events = new List<EventModel>();
 
             try
             {
@@ -36,15 +36,17 @@ namespace POE_RaceDay.Database
 
                     while (reader.Read())
                     {
-                        message +=
-                            "Event ID: " + reader["EventID"] +
-                            " | Organiser ID: " + reader["OrganiserID"] +
-                            " | Type: " + reader["EventType"] +
-                            " | Name: " + reader["EventName"] +
-                            " | Date: " + reader["EventDate"] +
-                            " | Location: " + reader["EventLocation"] +
-                            " | Description: " + reader["EventDescription"] +
-                            Environment.NewLine;
+                        EventModel eventItem = new EventModel();
+
+                        eventItem.EventID = Convert.ToInt32(reader["EventID"]);
+                        eventItem.OrganiserID = Convert.ToInt32(reader["OrganiserID"]);
+                        eventItem.EventType = reader["EventType"].ToString()!;
+                        eventItem.EventName = reader["EventName"].ToString()!;
+                        eventItem.EventDate = Convert.ToDateTime(reader["EventDate"]);
+                        eventItem.EventLocation = reader["EventLocation"].ToString()!;
+                        eventItem.EventDescription = reader["EventDescription"].ToString()!;
+
+                        events.Add(eventItem);
                     }
 
                     reader.Close();
@@ -52,18 +54,18 @@ namespace POE_RaceDay.Database
             }
             catch (Exception ex)
             {
-                message = "Failed to get events: " + ex.Message;
+                throw new Exception("Failed to get events: " + ex.Message);
             }
 
-            return message;
+            return events;
         }//end of get_events
 
 
 
         //get event
-        public string get_event(int eventID)
+        public EventModel? get_event(int eventID)
         {//start of get_event
-            string message = "Event not found.";
+            EventModel? eventItem = null;
 
             try
             {
@@ -91,14 +93,15 @@ namespace POE_RaceDay.Database
 
                     if (reader.Read())
                     {
-                        message =
-                            "Event ID: " + reader["EventID"] +
-                            " | Organiser ID: " + reader["OrganiserID"] +
-                            " | Type: " + reader["EventType"] +
-                            " | Name: " + reader["EventName"] +
-                            " | Date: " + reader["EventDate"] +
-                            " | Location: " + reader["EventLocation"] +
-                            " | Description: " + reader["EventDescription"];
+                        eventItem = new EventModel();
+
+                        eventItem.EventID = Convert.ToInt32(reader["EventID"]);
+                        eventItem.OrganiserID = Convert.ToInt32(reader["OrganiserID"]);
+                        eventItem.EventType = reader["EventType"].ToString()!;
+                        eventItem.EventName = reader["EventName"].ToString()!;
+                        eventItem.EventDate = Convert.ToDateTime(reader["EventDate"]);
+                        eventItem.EventLocation = reader["EventLocation"].ToString()!;
+                        eventItem.EventDescription = reader["EventDescription"].ToString()!;
                     }
 
                     reader.Close();
@@ -106,10 +109,10 @@ namespace POE_RaceDay.Database
             }
             catch (Exception ex)
             {
-                message = "Failed to get event: " + ex.Message;
+                throw new Exception("Failed to get event: " + ex.Message);
             }
 
-            return message;
+            return eventItem;
         }//start of get_event
 
 
