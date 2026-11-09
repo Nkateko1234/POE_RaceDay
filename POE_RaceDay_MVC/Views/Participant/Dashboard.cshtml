@@ -14,6 +14,11 @@
             <div class="card shadow p-3">
                 <h5>Upcoming Events</h5>
                 <p>Explore available races and events.</p>
+                <a asp-controller="Participant"
+                   asp-action="Events"
+                   class="btn raceday-button">
+                    Browse Events
+                </a>
             </div>
         </div>
 
@@ -21,6 +26,11 @@
             <div class="card shadow p-3">
                 <h5>My Enrolments</h5>
                 <p>View the events you have joined.</p>
+                <a asp-controller="Participant"
+                   asp-action="MyEnrollments"
+                   class="btn raceday-button">
+                    My Enrolments
+                </a>
             </div>
         </div>
 
@@ -28,6 +38,11 @@
             <div class="card shadow p-3">
                 <h5>My Results</h5>
                 <p>View your race history and results.</p>
+                <a asp-controller="Participant"
+                   asp-action="MyResults"
+                   class="btn raceday-button">
+                    My Results
+                </a>
             </div>
         </div>
     </div>

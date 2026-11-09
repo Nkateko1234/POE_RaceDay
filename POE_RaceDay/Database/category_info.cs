@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using POE_RaceDay.Models;
 
 namespace POE_RaceDay.Database
 {
@@ -6,14 +7,11 @@ namespace POE_RaceDay.Database
     {
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
-        public string get_categories()
+        public List<CategoryModel> get_categories()
         {
-            string message = "";
+            List<CategoryModel> categories = new List<CategoryModel>();
 
-            try
-            {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection =new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -26,54 +24,38 @@ namespace POE_RaceDay.Database
                             EntryFee
                         FROM Category";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        message +=
-                            "Category ID: " +
-                            reader["CategoryID"] +
-                            " | Event ID: " +
-                            reader["EventID"] +
-                            " | Name: " +
-                            reader["CategoryName"] +
-                            " | Distance: " +
-                            reader["Distance"] +
-                            " | Entry Fee: " +
-                            reader["EntryFee"] +
-                            Environment.NewLine;
-                    }
+                    CategoryModel category = new CategoryModel();
+
+                    category.CategoryID = Convert.ToInt32(reader["CategoryID"]);
+                    category.EventID = Convert.ToInt32(reader["EventID"]);
+                    category.CategoryName = reader["CategoryName"].ToString() ?? "";
+                    category.Distance = reader["Distance"].ToString() ?? "";
+                    category.EntryFee = Convert.ToDecimal(reader["EntryFee"]);
+
+                    categories.Add(category);
+                }
 
                     reader.Close();
                 }
+            return categories;
             }
-            catch (Exception ex)
-            {
-                message =
-                    "Failed to get categories: " +
-                    ex.Message;
-            }
-
-            return message;
-        }
-
+            
 
         // =====================================================
         // GET CATEGORIES FOR AN EVENT
         // =====================================================
 
-        public string get_event_categories(int eventID)
+        public List<CategoryModel> get_event_categories(int eventID)
         {
-            string message = "";
+            List<CategoryModel> categories = new List<CategoryModel>();
 
-            try
-            {
-                using (SqlConnection connection =
-                    new SqlConnection(connectionString))
+                using (SqlConnection connection =new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -87,40 +69,28 @@ namespace POE_RaceDay.Database
                         FROM Category
                         WHERE EventID = @EventID";
 
-                    SqlCommand command =
-                        new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue(
-                        "@EventID", eventID);
+                    command.Parameters.AddWithValue( "@EventID", eventID);
 
-                    SqlDataReader reader =
-                        command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        message +=
-                            "Category ID: " +
-                            reader["CategoryID"] +
-                            " | Name: " +
-                            reader["CategoryName"] +
-                            " | Distance: " +
-                            reader["Distance"] +
-                            " | Entry Fee: " +
-                            reader["EntryFee"] +
-                            Environment.NewLine;
-                    }
+                    CategoryModel category = new CategoryModel();
+
+                    category.CategoryID = Convert.ToInt32(reader["CategoryID"]);
+                    category.EventID = Convert.ToInt32(reader["EventID"]);
+                    category.CategoryName = reader["CategoryName"].ToString() ?? "";
+                    category.Distance = reader["Distance"].ToString() ?? "";
+                    category.EntryFee = Convert.ToDecimal(reader["EntryFee"]);
+
+                    categories.Add(category);
+                }
 
                     reader.Close();
                 }
-            }
-            catch (Exception ex)
-            {
-                message =
-                    "Failed to get categories: " +
-                    ex.Message;
-            }
-
-            return message;
+            return categories;
         }
 
 

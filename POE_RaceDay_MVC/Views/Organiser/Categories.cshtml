@@ -1,0 +1,150 @@
+﻿@model List<POE_RaceDay_MVC.Models.CategoryViewModel>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+
+<div class="container mt-5">
+
+    <h1 class="fw-bold">MANAGE CATEGORIES</h1>
+
+    <p class="text-muted">
+        Create and manage categories for your RaceDay events.
+    </p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    <!-- CREATE CATEGORY FORM -->
+    <div class="card shadow-sm p-4 mb-5">
+
+        <h4 class="fw-bold mb-3">Create New Category</h4>
+
+        <form asp-controller="Organiser"
+              asp-action="CreateCategory"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="form-label">Select Event</label>
+
+                <select name="EventID" class="form-select" required>
+                    <option value="">-- Select an Event --</option>
+
+                    @if (ViewBag.Events != null)
+                    {
+                        foreach (var eventItem in
+                        (List<POE_RaceDay_MVC.Models.EventViewModel>)ViewBag.Events)
+                        {
+                            <option value="@eventItem.EventID">
+                                @eventItem.EventName
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Category Name</label>
+                <input name="CategoryName"
+                       class="form-control"
+                       placeholder="e.g. Junior Race"
+                       required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Distance</label>
+                <input name="Distance"
+                       class="form-control"
+                       placeholder="e.g. 10km"
+                       required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Entry Fee (R)</label>
+                <input name="EntryFee"
+                       type="number"
+                       step="0.01"
+                       min="0"
+                       class="form-control"
+                       placeholder="150.00"
+                       required />
+            </div>
+
+            <button type="submit" class="btn raceday-button">
+                Create Category
+            </button>
+
+        </form>
+    </div>
+
+
+    <!-- DISPLAY CATEGORIES -->
+    <h4 class="fw-bold mb-3">Available Categories</h4>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No categories have been created yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Category ID</th>
+                        <th>Event ID</th>
+                        <th>Category Name</th>
+                        <th>Distance</th>
+                        <th>Entry Fee</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.CategoryID</td>
+                            <td>@category.EventID</td>
+                            <td>@category.CategoryName</td>
+                            <td>@category.Distance</td>
+                            <td>R @category.EntryFee.ToString("0.00")</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+    <a asp-controller="Organiser"
+       asp-action="Dashboard"
+       class="btn btn-outline-secondary mt-3">
+        Back to Dashboard
+    </a>
+
+</div>

@@ -51,3 +51,165 @@ body {
         background-color: #A4EA25;
         color: #171717;
     }
+
+.raceday-navbar-logo {
+    width: 180px;
+    height: 60px;
+    object-fit: contain;
+    display: block;
+}
+
+.raceday-navbar {
+    background-color: #F5F1E8;
+    border-bottom: 1px solid #ded9ce;
+    padding: 10px 0;
+}
+
+@media (max-width: 576px) {
+    .raceday-navbar-logo {
+        width: 140px;
+        height: 48px;
+    }
+}
+.features-heading {
+    font-size: 26px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.heading-black {
+    color: #171717;
+}
+
+.heading-green {
+    color: #80B900;
+}
+
+.heading-lime {
+    color: #B7FF35;
+}
+/* RACEDAY HOMEPAGE */
+
+.raceday-home-hero {
+    background-color: #F5F1E8;
+    color: #171717;
+    padding: 85px 20px 75px;
+}
+
+.raceday-dot {
+    color: #B7FF35;
+}
+
+.raceday-main-button {
+    background-color: #B7FF35;
+    color: #171717;
+    font-weight: bold;
+    border: 2px solid #B7FF35;
+    padding: 13px 25px;
+}
+
+    .raceday-main-button:hover {
+        background-color: #80B900;
+        border-color: #80B900;
+        color: #171717;
+    }
+
+/* FEATURE SECTION */
+
+.raceday-feature-section {
+    background-color: #FFFFFF;
+    padding: 35px 0 45px;
+    border-radius: 15px;
+}
+
+.features-heading {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.heading-black {
+    color: #171717;
+}
+
+.heading-green {
+    color: #80B900;
+}
+
+.heading-lime {
+    color: #B7FF35;
+}
+
+/* FEATURE CARDS */
+
+.feature-card {
+    min-height: 145px;
+    padding: 15px 12px;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 30px;
+    }
+
+    .feature-card h4 {
+        font-size: 21px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .feature-card p {
+        font-size: 16px;
+        margin-bottom: 0;
+    }
+
+/* DISCOVER CARD */
+
+.discover-card {
+    background-color: #F5F1E8;
+    color: #171717;
+}
+
+/* COMPETE CARD */
+
+.compete-card {
+    background-color: #171717;
+    color: #FFFFFF;
+}
+
+    .compete-card h3 {
+        color: #B7FF35;
+    }
+
+/* ACHIEVE CARD */
+
+.achieve-card {
+    background-color: #B7FF35;
+    color: #171717;
+}
+
+/* MOBILE DESIGN */
+
+@media (max-width: 767px) {
+
+    .raceday-home-hero {
+        padding: 60px 15px;
+    }
+
+    .features-heading {
+        font-size: 21px;
+    }
+
+    .feature-card {
+        min-height: 130px;
+    }
+}

@@ -1,11 +1,16 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
+    int? userID = Context.Session.GetInt32("UserID");
+    string? role = Context.Session.GetString("Role");
 }
 
-<div class="container-fluid py-5 text-center"
-     style="background-color: #F5F1E8; color: #171717;">
+<!-- HERO SECTION -->
+<div class="raceday-home-hero text-center">
 
-    <h1 class="display-1 fw-bold">RACEDAY<span style="color:#B7FF35;">.</span></h1>
+    <h1 class="display-1 fw-bold">
+        RACEDAY<span class="raceday-dot">.</span>
+    </h1>
 
     <h2 class="fw-bold mb-4">
         PUSH YOUR LIMITS.
@@ -18,40 +23,106 @@
         and become part of the RaceDay community.
     </p>
 
-    <a asp-controller="Auth"
-       asp-action="Register"
-       class="btn btn-lg mt-3 me-2"
-       style="background-color:#B7FF35; color:#171717; font-weight:bold;">
-        REGISTER NOW
-    </a>
+    <div class="mt-4">
 
-    <a asp-controller="Auth"
-       asp-action="Login"
-       class="btn btn-outline-dark btn-lg mt-3">
-        LOGIN
-    </a>
+        @if (userID == null)
+        {
+            <a asp-controller="Auth"
+               asp-action="Register"
+               class="btn raceday-main-button btn-lg me-2">
+                REGISTER NOW
+            </a>
 
-</div>
-
-<div class="container py-5">
-
-    <div class="row text-center">
-
-        <div class="col-md-4 mb-4">
-            <h3 class="fw-bold">01. DISCOVER</h3>
-            <p>Find exciting upcoming running events.</p>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <h3 class="fw-bold">02. COMPETE</h3>
-            <p>Register and challenge yourself.</p>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <h3 class="fw-bold">03. ACHIEVE</h3>
-            <p>Track your race participation and results.</p>
-        </div>
+            <a asp-controller="Auth"
+               asp-action="Login"
+               class="btn btn-outline-dark btn-lg">
+                LOGIN
+            </a>
+        }
+        else if (role == "Organiser")
+        {
+            <a asp-controller="Organiser"
+               asp-action="Dashboard"
+               class="btn raceday-main-button btn-lg">
+                ORGANISER DASHBOARD
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Participant"
+               asp-action="Events"
+               class="btn raceday-main-button btn-lg">
+                EXPLORE EVENTS
+            </a>
+        }
 
     </div>
 
 </div>
+
+
+<!-- FEATURE SECTION -->
+<section class="raceday-feature-section">
+
+    <div class="container">
+
+        <h2 class="features-heading text-center">
+            <span class="heading-black">MORE</span>
+            <span class="heading-green">THAN JUST</span>
+            <span class="heading-lime">A RACE.</span>
+        </h2>
+
+        <div class="row g-3">
+
+            <!-- DISCOVER -->
+            <div class="col-md-4">
+
+                <div class="feature-card discover-card">
+
+                    <h3>01.</h3>
+
+                    <h4>DISCOVER</h4>
+
+                    <p>Find events.</p>
+
+                </div>
+
+            </div>
+
+
+            <!-- COMPETE -->
+            <div class="col-md-4">
+
+                <div class="feature-card compete-card">
+
+                    <h3>02.</h3>
+
+                    <h4>COMPETE</h4>
+
+                    <p>Take the challenge.</p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACHIEVE -->
+            <div class="col-md-4">
+
+                <div class="feature-card achieve-card">
+
+                    <h3>03.</h3>
+
+                    <h4>ACHIEVE</h4>
+
+                    <p>Own your results.</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

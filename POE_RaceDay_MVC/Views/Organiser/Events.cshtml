@@ -1,0 +1,123 @@
+﻿@model List<POE_RaceDay_MVC.Models.EventViewModel>
+
+@{
+    ViewData["Title"] = "Manage Events";
+}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold">MANAGE EVENTS</h1>
+            <p class="text-muted">Create and manage your RaceDay events.</p>
+        </div>
+
+        <a asp-action="CreateEvent"
+           class="btn raceday-button">
+            + Create Event
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="card p-4 text-center">
+            <h4>No events available</h4>
+            <p>Create your first RaceDay event.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Event ID</th>
+                        <th>Event Name</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.EventID</td>
+                            <td>@item.EventName</td>
+                            <td>@item.EventType</td>
+                            <td>@item.EventDate.ToString("dd MMM yyyy")</td>
+                            <td>@item.EventLocation</td>
+
+                            <td>
+                                <a asp-action="EditEvent"
+                                   asp-route-id="@item.EventID"
+                                   class="btn btn-sm btn-outline-dark">
+                                    Edit
+                                </a>
+
+                                <!-- VIEW ENROLMENTS -->
+                                <a asp-controller="Organiser"
+                                   asp-action="Enrollments"
+                                   asp-route-eventID="@item.EventID"
+                                   class="btn btn-sm btn-outline-primary">
+                                    View Enrolments
+                                </a>
+                                <form asp-action="DeleteEvent"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this event?');">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="eventID"
+                                           value="@item.EventID" />
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="6" class="text-muted small">
+                                **Description:** @item.EventDescription
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <a asp-action="Dashboard"
+       class="btn btn-outline-secondary mt-3">
+        Back to Dashboard
+    </a>
+
+</div>

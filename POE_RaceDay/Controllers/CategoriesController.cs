@@ -12,20 +12,21 @@ namespace POE_RaceDay.Controllers
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
         [HttpGet]
-        public string GetCategories()
+        public IActionResult GetCategories()
         {//start of GetCategories
             category_info category = new category_info();
 
-            return category.get_categories();
+            return Ok(category.get_categories());
         }//end of GetCategories
+
 
         //Get Categories for event
         [HttpGet("event/{eventID}")]
-        public string GetEventCategories(int eventID)
+        public IActionResult GetEventCategories(int eventID)
         {//start of GetEventCategories
             category_info category = new category_info();
 
-            return category.get_event_categories(eventID);
+            return Ok(category.get_event_categories(eventID));
         }
 
         //create category for organsers only

@@ -12,69 +12,79 @@ namespace POE_RaceDay.Controllers
         private string connectionString = @"Data source=(localdb)\api_guide;database=Race_Day;";
 
         [HttpPost]
-        public string AddResult(int enrollmentID,TimeSpan finishTime,int position)
+        public IActionResult AddResult(int enrollmentID,TimeSpan finishTime,int position)
         {
             int? userID = HttpContext.Session.GetInt32("UserID");
 
             if (userID == null)
             {
-                return "You must be logged in.";
+                return Unauthorized("You must be logged in.");
             }
 
             string role = HttpContext.Session.GetString("Role");
 
             if (role != "Organiser")
             {
-                return "Only Organisers can capture results.";
+                return Forbid();
             }
 
             int organiserID = GetOrganiserID(userID.Value);
 
             if (organiserID == 0)
             {
-                return "Organiser account not found.";
+                return NotFound("Organiser account not found.");
             }
 
             // Check that the enrollment belongs
             // to an event owned by this organiser
             if (!EnrollmentBelongsToOrganiser( enrollmentID, organiserID))
             {
-                return "You can only capture results for your own events.";
+                return BadRequest("You can only capture results for your own events.");
             }
 
             result_info result = new result_info();
 
-            return result.add_result( enrollmentID,finishTime, position);
+            string message = result.add_result(
+        enrollmentID,
+        finishTime,
+        position);
+
+            if (message == "Result saved successfully.")
+            {
+                return Ok(new { message = message });
+            }
+
+            return BadRequest(new { message = message });
         }
 
         // PARTICIPANT CAN VIEW THEIR OWN RESULTS
         [HttpGet("my-results")]
-        public string MyResults()
+        public IActionResult MyResults()
         {
             int? userID = HttpContext.Session.GetInt32("UserID");
 
             if (userID == null)
             {
-                return "You must be logged in.";
+                return Unauthorized("You must be logged in.");
             }
 
             string role = HttpContext.Session.GetString("Role");
 
             if (role != "Participant")
             {
-                return "Only Participants can view their results.";
+                return Forbid();
             }
 
             int participantID = GetParticipantID(userID.Value);
 
             if (participantID == 0)
             {
-                return "Participant account not found.";
+                return NotFound("Participant account not found.");
             }
 
             result_info result = new result_info();
 
-            return result.get_my_results(participantID);
+            return Ok(result.get_my_results(participantID));
         }
 
         private int GetOrganiserID(int userID)
@@ -186,6 +196,34 @@ namespace POE_RaceDay.Controllers
             {
                 return false;
             }
+        }
+
+        [HttpGet("organiser-results")]
+        public IActionResult GetOrganiserResults()
+        {
+            int? userID = HttpContext.Session.GetInt32("UserID");
+            string? role = HttpContext.Session.GetString("Role");
+
+            if (userID == null)
+            {
+                return Unauthorized("You must be logged in.");
+            }
+
+            if (role != "Organiser")
+            {
+                return StatusCode(403, "Only Organisers can view these results.");
+            }
+
+            int organiserID = GetOrganiserID(userID.Value);
+
+            if (organiserID == 0)
+            {
+                return NotFound("Organiser account not found.");
+            }
+
+            result_info result = new result_info();
+
+            return Ok(result.get_organiser_results(organiserID));
         }
     }//end of class
 }//end of namespace

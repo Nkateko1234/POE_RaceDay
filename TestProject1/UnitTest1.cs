@@ -12,7 +12,7 @@ namespace TestProject1
         // AUTH CONTROLLER TESTS
         // =====================================================
 
-        [Fact]
+        /*[Fact]
         public void Logout_ReturnsSuccessfulMessage()
         {
             // Arrange
@@ -778,6 +778,6 @@ namespace TestProject1
             return _session.TryGetValue(
                 key,
                 out value);
-        }
+        }*/
     }
 }

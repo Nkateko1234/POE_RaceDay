@@ -1,0 +1,77 @@
+﻿@model List<POE_RaceDay_MVC.Models.EventViewModel>
+
+@{
+    ViewData["Title"] = "Available Events";
+}
+
+<div class="container mt-5">
+
+    <h2 class="fw-bold">Discover Events</h2>
+
+    <p class="text-muted">
+        Find your next race and challenge yourself.
+    </p>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            No events are currently available.
+        </div>
+    }
+    else
+    {
+        <div class="row mt-4">
+
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+
+                    <div class="card shadow h-100 p-3">
+
+                        <h5 class="fw-bold">@item.EventName</h5>
+
+                        <p>
+                            <strong>Type:</strong> @item.EventType
+                        </p>
+
+                        <p>
+                            <strong>Date:</strong>
+                            @item.EventDate.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            @item.EventLocation
+                        </p>
+
+                        <p>@item.EventDescription</p>
+
+                        <a asp-controller="Participant"
+                           asp-action="EventDetails"
+                           asp-route-id="@item.EventID"
+                           class="btn raceday-button mt-auto">
+                            View Details
+                        </a>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+    <a asp-controller="Participant"
+       asp-action="Dashboard"
+       class="btn btn-outline-dark mt-3">
+        Back to Dashboard
+    </a>
+
+</div>

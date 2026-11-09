@@ -1,0 +1,92 @@
+﻿@model POE_RaceDay_MVC.Models.EventViewModel
+
+@{
+    ViewData["Title"] = "Edit Event";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow-sm p-4 mx-auto" style="max-width:700px;">
+
+        <h2 class="fw-bold mb-2">EDIT EVENT</h2>
+        <p class="text-muted">Update your event information.</p>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Error
+            </div>
+        }
+
+        <form asp-action="EditEvent" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="EventID" />
+
+            <div class="mb-3">
+                <label asp-for="EventName" class="form-label">
+                    Event Name
+                </label>
+                <input asp-for="EventName" class="form-control" />
+                <span asp-validation-for="EventName"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EventType" class="form-label">
+                    Event Type
+                </label>
+                <input asp-for="EventType" class="form-control" />
+                <span asp-validation-for="EventType"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EventDate" class="form-label">
+                    Event Date
+                </label>
+                <input asp-for="EventDate"
+                       type="datetime-local"
+                       class="form-control"
+                       value="@Model.EventDate.ToString("yyyy-MM-ddTHH:mm")" />
+                <span asp-validation-for="EventDate"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EventLocation" class="form-label">
+                    Event Location
+                </label>
+                <input asp-for="EventLocation" class="form-control" />
+                <span asp-validation-for="EventLocation"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EventDescription" class="form-label">
+                    Event Description
+                </label>
+                <textarea asp-for="EventDescription"
+                          class="form-control"
+                          rows="4"></textarea>
+                <span asp-validation-for="EventDescription"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn raceday-button">
+                Save Changes
+            </button>
+
+            <a asp-action="Events"
+               class="btn btn-outline-secondary ms-2">
+                Cancel
+            </a>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

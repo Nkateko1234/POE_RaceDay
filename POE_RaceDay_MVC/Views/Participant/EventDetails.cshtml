@@ -1,0 +1,113 @@
+﻿@model POE_RaceDay_MVC.Models.EventViewModel
+
+@{
+    ViewData["Title"] = "Event Details";
+
+    var categories =
+        ViewBag.Categories as List<POE_RaceDay_MVC.Models.CategoryViewModel>
+        ?? new List<POE_RaceDay_MVC.Models.CategoryViewModel>();
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4 mx-auto" style="max-width:650px;">
+
+        <h2 class="fw-bold">@Model.EventName</h2>
+
+        <hr />
+
+        <p>
+            <strong>Event Type:</strong> @Model.EventType
+        </p>
+
+        <p>
+            <strong>Event Date:</strong>
+            @Model.EventDate.ToString("dd/MM/yyyy HH:mm")
+        </p>
+
+        <p>
+            <strong>Location:</strong> @Model.EventLocation
+        </p>
+
+        <h5 class="mt-4">About this event</h5>
+
+        <p>@Model.EventDescription</p>
+
+        <hr />
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
+
+        <h4 class="fw-bold mt-3">Enrol in this event</h4>
+
+        @if (categories.Any())
+        {
+            <form asp-controller="Participant"
+                  asp-action="Enroll"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="eventID"
+                       value="@Model.EventID" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">
+                        Select your race category
+                    </label>
+
+                    <select name="categoryID"
+                            class="form-select"
+                            required>
+
+                        <option value="">-- Select a category --</option>
+
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.CategoryID">
+                                @category.CategoryName -
+                                @category.Distance -
+                                R @category.EntryFee.ToString("0.00")
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <button type="submit" class="btn raceday-button w-100">
+                    Enroll Now
+                </button>
+
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No categories have been added to this event yet.
+                Please check again later.
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <a asp-controller="Participant"
+               asp-action="Events"
+               class="btn btn-outline-dark">
+                Back to Events
+            </a>
+        </div>
+
+    </div>
+
+</div>

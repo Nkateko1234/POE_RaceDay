@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using POE_RaceDay.Models;
 
 namespace POE_RaceDay.Database
 {//start of namespace
@@ -61,9 +62,11 @@ namespace POE_RaceDay.Database
         }//end of add_result method
 
         // PARTICIPANT VIEW OWN RESULTS
-        public string get_my_results(int participantID)
+        public List<ResultModel> get_my_results(int participantID)
         {//start of get_my_result method
-            string message = "";
+
+            // Store all results in a list
+            List<ResultModel> results = new List<ResultModel>();
 
             try
             {
@@ -105,22 +108,23 @@ namespace POE_RaceDay.Database
 
                     while (reader.Read())
                     {
-                        message +=
-                            "Result ID: " +
-                            reader["ResultID"] +
-                            " | Event: " +
-                            reader["EventName"] +
-                            " | Date: " +
-                            reader["EventDate"] +
-                            " | Category: " +
-                            reader["CategoryName"] +
-                            " | Finish Time: " +
-                            reader["FinishTime"] +
-                            " | Position: " +
-                            reader["Position"] +
-                            " | Status: " +
-                            reader["ResultStatus"] +
-                            Environment.NewLine;
+                        ResultModel result = new ResultModel();
+
+                        result.ResultID =Convert.ToInt32(reader["ResultID"]);
+
+                        result.EventName = reader["EventName"].ToString() ?? "";
+
+                        result.EventDate = Convert.ToDateTime(reader["EventDate"]);
+
+                        result.CategoryName = reader["CategoryName"].ToString() ?? "";
+
+                        result.FinishTime = (TimeSpan)reader["FinishTime"];
+
+                        result.Position = Convert.ToInt32(reader["Position"]);
+
+                        result.ResultStatus = reader["ResultStatus"].ToString() ?? "";
+
+                        results.Add(result);
                     }
 
                     reader.Close();
@@ -128,10 +132,72 @@ namespace POE_RaceDay.Database
             }
             catch (Exception ex)
             {
-                message = "Failed to get results: " + ex.Message;
+                throw new Exception("Failed to get results: " + ex.Message);
             }
 
-            return message;
+            return results;
         }//end of get_my_result method
+
+        public List<ResultModel> get_organiser_results(int organiserID)
+        {
+            List<ResultModel> results = new List<ResultModel>();
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                string query = @"
+            SELECT
+                r.ResultID,
+                r.EnrollmentID,
+                p.PName AS ParticipantName,
+                p.Surname,
+                e.EventName,
+                e.EventDate,
+                c.CategoryName,
+                r.FinishTime,
+                r.Position,
+                r.ResultStatus
+            FROM Result r
+            INNER JOIN Enrollment en
+                ON r.EnrollmentID = en.EnrollmentID
+            INNER JOIN Participants p
+                ON en.ParticipantID = p.ParticipantsID
+            INNER JOIN Event e
+                ON en.EventID = e.EventID
+            INNER JOIN Category c
+                ON en.CategoryID = c.CategoryID
+            WHERE e.OrganiserID = @OrganiserID
+            ORDER BY e.EventDate DESC, r.Position ASC;";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@OrganiserID", organiserID);
+
+                    con.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ResultModel result = new ResultModel();
+
+                            result.ResultID = Convert.ToInt32(reader["ResultID"]);
+                            result.EnrollmentID = Convert.ToInt32(reader["EnrollmentID"]);
+                            result.ParticipantName = reader["ParticipantName"].ToString() ?? "";
+                            result.Surname = reader["Surname"].ToString() ?? "";
+                            result.EventName = reader["EventName"].ToString() ?? "";
+                            result.EventDate = Convert.ToDateTime(reader["EventDate"]);
+                            result.CategoryName = reader["CategoryName"].ToString() ?? "";
+                            result.FinishTime = (TimeSpan)reader["FinishTime"];
+                            result.Position = Convert.ToInt32(reader["Position"]);
+                            result.ResultStatus = reader["ResultStatus"].ToString() ?? "";
+
+                            results.Add(result);
+                        }
+                    }
+                }
+            }
+
+            return results;
+        }
     }//end of class
 }//end of namespace

@@ -1,0 +1,125 @@
+﻿@model List<POE_RaceDay_MVC.Models.ResultViewModel>
+
+@{
+    ViewData["Title"] = "Race Results";
+}
+
+<div class="container mt-5">
+
+    <div class="mb-5">
+        <p class="text-uppercase fw-bold"
+           style="color:#80B900; letter-spacing:3px;">
+            RACEDAY MANAGEMENT
+        </p>
+
+        <h1 class="fw-bold display-5">
+            Race Results<span style="color:#B7FF35;">.</span>
+        </h1>
+
+        <p class="text-muted">
+            View participant finishing times and race positions.
+        </p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Recorded Results</h3>
+
+        <a asp-controller="Organiser"
+           asp-action="Events"
+           class="btn raceday-button">
+            View Events
+        </a>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="p-5 text-center rounded-3"
+             style="background:#F5F1E8;">
+
+            <h4 class="fw-bold">No Results Available</h4>
+
+            <p class="text-muted">
+                Results will appear here once you have recorded
+                participant finishing times.
+            </p>
+
+            <a asp-controller="Organiser"
+               asp-action="Enrollments"
+               class="btn raceday-button">
+                View Enrollments
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead style="background:#171717; color:#F5F1E8;">
+                    <tr>
+                        <th>Position</th>
+                        <th>Participant</th>
+                        <th>Event</th>
+                        <th>Event Date</th>
+                        <th>Category</th>
+                        <th>Finish Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var result in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">
+                                @result.Position
+                            </td>
+
+                            <td>
+                                @result.ParticipantName
+                                @result.Surname
+                            </td>
+
+                            <td>
+                                @result.EventName
+                            </td>
+
+                            <td>
+                                @result.EventDate.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+                                @result.CategoryName
+                            </td>
+
+                            <td>
+                                @result.FinishTime
+                            </td>
+
+                            <td>
+                                <span class="badge bg-success">
+                                    @result.ResultStatus
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    }
+
+    <a asp-controller="Organiser"
+       asp-action="Dashboard"
+       class="btn btn-outline-dark mt-3">
+        Back to Dashboard
+    </a>
+
+</div>

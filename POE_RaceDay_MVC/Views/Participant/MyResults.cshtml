@@ -1,0 +1,83 @@
+﻿@model List<POE_RaceDay_MVC.Models.ResultViewModel>
+
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<div class="container mt-5">
+
+    <h2 class="fw-bold">My Race Results</h2>
+
+    <p class="text-muted">
+        View your finishing times and positions.
+    </p>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            No race results are available yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Finish Time</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var result in Model)
+                    {
+                        <tr>
+                            <td>@result.EventName</td>
+
+                            <td>
+                                @result.EventDate.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td>@result.CategoryName</td>
+
+                            <td>
+                                @result.FinishTime.ToString(@"hh\:mm\:ss")
+                            </td>
+
+                            <td>@result.Position</td>
+
+                            <td>
+                                <span class="badge bg-success">
+                                    @result.ResultStatus
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+    <a asp-controller="Participant"
+       asp-action="Dashboard"
+       class="btn raceday-button mt-3">
+        Back to Dashboard
+    </a>
+
+</div>

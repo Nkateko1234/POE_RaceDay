@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using POE_RaceDay_MVC.Models;
+using System.Net.Http;
 using System.Text.Json;
+
 
 namespace POE_RaceDay_MVC.Controllers
 {
@@ -304,6 +306,285 @@ namespace POE_RaceDay_MVC.Controllers
             }
 
             return RedirectToAction("Events");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Enrollments(int eventID)
+        {
+            // Check that the user is an Organiser
+            if (!IsOrganiser())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            try
+            {
+                // Use the existing API client method
+                HttpClient client = CreateApiClient();
+
+                // Request enrolments for this event from the API
+                HttpResponseMessage response =
+                    await client.GetAsync("api/Enrollments/event/" + eventID);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Error"] = "Could not retrieve event enrolments.";
+
+                    return View(new List<EnrollmentViewModel>());
+                }
+
+                // Read the JSON response
+                string json = await response.Content.ReadAsStringAsync();
+
+                // Convert JSON into MVC models
+                List<EnrollmentViewModel> enrolments =
+                    JsonSerializer.Deserialize<List<EnrollmentViewModel>>(
+                        json,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        }) ?? new List<EnrollmentViewModel>();
+
+                return View(enrolments);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error loading enrolments: " + ex.Message;
+
+                return View(new List<EnrollmentViewModel>());
+            }
+        }
+        // DISPLAY CAPTURE RESULT FORM
+        [HttpGet]
+        public IActionResult CaptureResult(int enrollmentID)
+        {
+            if (!IsOrganiser())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var model = new CaptureResultViewModel
+            {
+                EnrollmentID = enrollmentID
+            };
+
+            return View(model);
+        }
+
+
+        // SEND RESULT TO API
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CaptureResult(
+            CaptureResultViewModel model)
+        {
+            if (!IsOrganiser())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                HttpClient client = CreateApiClient();
+
+                string url =
+                    "api/Results?enrollmentID=" + model.EnrollmentID +
+                    "&finishTime=" + Uri.EscapeDataString(
+                        model.FinishTime.ToString(@"hh\:mm\:ss")) +
+                    "&position=" + model.Position;
+
+                HttpResponseMessage response =
+                    await client.PostAsync(url, null);
+
+                string result =
+                    await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    ViewBag.Error = result;
+                    return View(model);
+                }
+
+                TempData["Success"] = "Result saved successfully.";
+
+                return RedirectToAction("Dashboard");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error saving result: " + ex.Message;
+                return View(model);
+            }
+        }
+        // DISPLAY CATEGORIES
+        [HttpGet]
+        public async Task<IActionResult> Categories()
+        {
+            if (!IsOrganiser())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            try
+            {
+                HttpClient client = CreateApiClient();
+
+                // Get all categories from the API
+                HttpResponseMessage categoryResponse =
+                    await client.GetAsync("api/Categories");
+
+                // Get events for the category dropdown
+                HttpResponseMessage eventResponse =
+                    await client.GetAsync("api/Events");
+
+                if (!categoryResponse.IsSuccessStatusCode)
+                {
+                    ViewBag.Error = "Could not load categories.";
+                    return View(new List<CategoryViewModel>());
+                }
+
+                string categoryJson =
+                    await categoryResponse.Content.ReadAsStringAsync();
+
+                List<CategoryViewModel> categories =
+                    JsonSerializer.Deserialize<List<CategoryViewModel>>(
+                        categoryJson,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        }) ?? new List<CategoryViewModel>();
+
+                if (eventResponse.IsSuccessStatusCode)
+                {
+                    string eventJson =
+                        await eventResponse.Content.ReadAsStringAsync();
+
+                    List<EventViewModel> events =
+                        JsonSerializer.Deserialize<List<EventViewModel>>(
+                            eventJson,
+                            new JsonSerializerOptions
+                            {
+                                PropertyNameCaseInsensitive = true
+                            }) ?? new List<EventViewModel>();
+
+                    ViewBag.Events = events;
+                }
+                else
+                {
+                    ViewBag.Events = new List<EventViewModel>();
+                    ViewBag.Error = "Categories loaded, but events could not be loaded.";
+                }
+
+                return View(categories);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error loading categories: " + ex.Message;
+                ViewBag.Events = new List<EventViewModel>();
+
+                return View(new List<CategoryViewModel>());
+            }
+        }
+
+
+        // CREATE A CATEGORY
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCategory(CategoryViewModel model)
+        {
+            if (!IsOrganiser())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (model.EventID <= 0 ||
+                string.IsNullOrWhiteSpace(model.CategoryName) ||
+                string.IsNullOrWhiteSpace(model.Distance) ||
+                model.EntryFee < 0)
+            {
+                TempData["Error"] = "Please enter valid category details.";
+                return RedirectToAction("Categories");
+            }
+
+            try
+            {
+                HttpClient client = CreateApiClient();
+
+                string url =
+                    "api/Categories?eventID=" + model.EventID +
+                    "&categoryName=" + Uri.EscapeDataString(model.CategoryName) +
+                    "&distance=" + Uri.EscapeDataString(model.Distance) +
+                    "&entryFee=" + model.EntryFee.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture);
+
+                HttpResponseMessage response =
+                    await client.PostAsync(url, null);
+
+                string result =
+                    await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode ||
+                    !result.Contains("Category created successfully."))
+                {
+                    TempData["Error"] = result;
+                    return RedirectToAction("Categories");
+                }
+
+                TempData["Success"] = "Category created successfully.";
+                return RedirectToAction("Categories");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error creating category: " + ex.Message;
+                return RedirectToAction("Categories");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Results()
+        {
+            if (!IsOrganiser())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            try
+            {
+                HttpClient client = CreateApiClient();
+
+                HttpResponseMessage response =
+                    await client.GetAsync("api/Results/organiser-results");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    TempData["Error"] = "Could not retrieve race results.";
+
+                    return View(new List<ResultViewModel>());
+                }
+
+                string json = await response.Content.ReadAsStringAsync();
+
+                List<ResultViewModel> results =
+                    JsonSerializer.Deserialize<List<ResultViewModel>>(
+                        json,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        })
+                    ?? new List<ResultViewModel>();
+
+                return View(results);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error loading results: " + ex.Message;
+
+                return View(new List<ResultViewModel>());
+            }
         }
     }
 }

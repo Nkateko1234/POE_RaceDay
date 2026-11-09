@@ -1,0 +1,98 @@
+﻿@model List<POE_RaceDay_MVC.Models.EnrollmentViewModel>
+
+@{
+    ViewData["Title"] = "Event Enrolments";
+}
+
+<div class="container mt-5">
+
+    <h2 class="fw-bold">Event Enrolments</h2>
+
+    <p class="text-muted">
+        View participants registered for your events.
+    </p>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            No participants have enrolled in this event yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Enrollment ID</th>
+                        <th>Participant</th>
+                        <th>Email</th>
+                        <th>Event</th>
+                        <th>Category</th>
+                        <th>Distance</th>
+                        <th>Entry Fee</th>
+                        <th>Enrollment Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var enrolment in Model)
+                    {
+                        <tr>
+                            <td>@enrolment.EnrollmentID</td>
+
+                            <td>
+                                @enrolment.ParticipantName
+                                @enrolment.Surname
+                            </td>
+
+                            <td>@enrolment.Email</td>
+
+                            <td>@enrolment.EventName</td>
+
+                            <td>@enrolment.CategoryName</td>
+
+                            <td>@enrolment.Distance</td>
+
+                            <td>
+                                R @enrolment.EntryFee.ToString("0.00")
+                            </td>
+
+                            <td>
+                                @enrolment.EnrollmentDate.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td>
+                                @enrolment.EnrollmentStatus
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    }
+
+    <a asp-controller="Organiser"
+       asp-action="Events"
+       class="btn raceday-button mt-3">
+        Back to Events
+    </a>
+
+</div>

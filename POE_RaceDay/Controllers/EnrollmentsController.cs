@@ -54,14 +54,14 @@ namespace POE_RaceDay.Controllers
 
         //HttpGet to view own enrollments
         [HttpGet("my-enrollments")]
-        public string MyEnrollments()
+        public IActionResult MyEnrollments()
         {
             int? userID =
                 HttpContext.Session.GetInt32("UserID");
 
             if (userID == null)
             {
-                return "You must be logged in.";
+                return Unauthorized("You must be logged in.");
             }
 
             string role =
@@ -69,8 +69,7 @@ namespace POE_RaceDay.Controllers
 
             if (role != "Participant")
             {
-                return
-                    "Only Participants can view their enrollments.";
+                return Forbid();
             }
 
             int participantID =
@@ -78,54 +77,48 @@ namespace POE_RaceDay.Controllers
 
             if (participantID == 0)
             {
-                return "Participant account not found.";
+                return NotFound("Participant account not found.");
             }
 
-            enrollment_info enrollment =
-                new enrollment_info();
+            enrollment_info enrollment =new enrollment_info();
 
-            return enrollment.get_my_enrollments(
-                participantID);
+            var myEnrollments = enrollment.get_my_enrollments(participantID);
+
+            return Ok(myEnrollments);
         }
 
 
         
         //HTTPGet for EventEnrollment
         [HttpGet("event/{eventID}")]
-        public string EventEnrollments(
-            int eventID)
+        public IActionResult EventEnrollments( int eventID)
         {
-            int? userID =
-                HttpContext.Session.GetInt32("UserID");
+            int? userID = HttpContext.Session.GetInt32("UserID");
 
             if (userID == null)
             {
-                return "You must be logged in.";
+                return Unauthorized("You must be logged in.");
             }
 
-            string role =
-                HttpContext.Session.GetString("Role");
+            string role = HttpContext.Session.GetString("Role");
 
             if (role != "Organiser")
             {
-                return
-                    "Only Organisers can view event enrollments.";
+                return Forbid();
             }
 
-            int organiserID =
-                GetOrganiserID(userID.Value);
+            int organiserID = GetOrganiserID(userID.Value);
 
             if (organiserID == 0)
             {
-                return "Organiser account not found.";
+                return NotFound("Organiser account not found.");
             }
 
-            enrollment_info enrollment =
-                new enrollment_info();
+            enrollment_info enrollment = new enrollment_info();
 
-            return enrollment.get_event_enrollments(
-                eventID,
-                organiserID);
+            var eventEnrollments = enrollment.get_event_enrollments(eventID, organiserID);
+
+            return Ok(eventEnrollments);
         }
 
 
