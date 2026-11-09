@@ -50,6 +50,14 @@
 
                         @if (Context.Session.GetInt32("UserID") != null)
                         {
+                            <!-- My Profile link -->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                   asp-controller="Profile"
+                                   asp-action="Index">My Profile</a>
+                            </li>
+
+                            <!-- Logout link -->
                             <li class="nav-item">
                                 <form asp-controller="Auth" asp-action="Logout" method="post">
                                     <button type="submit" class="btn btn-link nav-link text-dark">
