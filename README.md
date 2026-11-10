@@ -340,3 +340,6 @@ Participants can view their recorded results through their dashboard.
 10.Capture a race result.
 11.Log in as the Participant and view the result.
 
+# 8 Youtube link
+Youtube: https://youtu.be/yy5t1XgYQhw
+
