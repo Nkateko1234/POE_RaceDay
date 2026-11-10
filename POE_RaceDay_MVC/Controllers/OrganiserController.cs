@@ -320,24 +320,31 @@ namespace POE_RaceDay_MVC.Controllers
 
             try
             {
-                // Use the existing API client method
                 HttpClient client = CreateApiClient();
 
-                // Request enrolments for this event from the API
+                // Request enrolments from the API
                 HttpResponseMessage response =
                     await client.GetAsync("api/Enrollments/event/" + eventID);
 
+                // Read the API response
+                string json =
+                    await response.Content.ReadAsStringAsync();
+
+                // Check whether the API request was successful
                 if (!response.IsSuccessStatusCode)
                 {
-                    TempData["Error"] = "Could not retrieve event enrolments.";
+                    ViewBag.Error =
+                        "API Error: " +
+                        (int)response.StatusCode +
+                        " - " +
+                        response.StatusCode +
+                        ". Details: " +
+                        json;
 
                     return View(new List<EnrollmentViewModel>());
                 }
 
-                // Read the JSON response
-                string json = await response.Content.ReadAsStringAsync();
-
-                // Convert JSON into MVC models
+                // Convert API JSON into MVC models
                 List<EnrollmentViewModel> enrolments =
                     JsonSerializer.Deserialize<List<EnrollmentViewModel>>(
                         json,
@@ -350,7 +357,8 @@ namespace POE_RaceDay_MVC.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Error loading enrolments: " + ex.Message;
+                ViewBag.Error =
+                    "Error loading enrolments: " + ex.Message;
 
                 return View(new List<EnrollmentViewModel>());
             }
